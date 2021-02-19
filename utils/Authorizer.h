@@ -32,10 +32,25 @@ namespace tech::utils {
         );
 
         static bool password(
+                const drogon::WebSocketConnectionPtr &wsConnPtr,
+                const std::string &email,
+                const std::string &password,
+                drogon::CloseCode &code,
+                Json::Value &result
+        );
+
+        static bool password(
                 const std::string &email,
                 const std::string &password,
                 drogon::HttpStatusCode &code,
                 Json::Value &body
+        );
+
+        static bool versionCode(
+                const drogon::WebSocketConnectionPtr &wsConnPtr,
+                const int &versionCode,
+                drogon::CloseCode &code,
+                Json::Value &result
         );
     };
 }
