@@ -9,6 +9,15 @@
 namespace tech::utils {
     class WebSocket {
     public:
+        enum class Type {
+            App = 0,
+            User = 1,
+            Chat = 2,
+            Play = 3,
+            Stream = 4
+        };
+
+    public:
         static std::string fromJson(
                 const Json::Value &value
         );
@@ -20,6 +29,7 @@ namespace tech::utils {
 
         static void initPing(
                 const drogon::WebSocketConnectionPtr &wsConnPtr,
+                const Json::Value &initMessage,
                 const std::chrono::duration<long double> &interval
         );
 

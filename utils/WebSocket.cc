@@ -30,9 +30,10 @@ string WebSocket::toJson(
 
 void WebSocket::initPing(
         const WebSocketConnectionPtr &wsConnPtr,
+        const Json::Value &initMessage,
         const chrono::duration<long double> &interval
 ) {
-    wsConnPtr->send("", WebSocketMessageType::Ping);
+    wsConnPtr->send(WebSocket::fromJson(initMessage));
     wsConnPtr->setPingMessage("", interval);
 }
 
