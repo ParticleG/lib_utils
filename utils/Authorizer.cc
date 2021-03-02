@@ -9,6 +9,7 @@
 #include <structures/User.h>
 #include <utils/Authorizer.h>
 #include <utils/Crypto.h>
+#include <utils/Utils.h>
 
 using namespace drogon;
 using namespace drogon_model;
@@ -35,11 +36,11 @@ Authorizer::Status Authorizer::accessToken(
         if (accessToken != auth.getValueOfAccessToken()) {
             return Authorizer::Status::Incorrect;
         }
-        if (trantor::Date::now() > trantor::Date::fromDbStringLocal(auth.getValueOfAccessTokenExpireTime())) {
+        if (Utils::toDate() > Utils::toDate(auth.getValueOfAccessTokenExpireTime())) {
             return Authorizer::Status::Expired;
         }
         auto configurator = app().getPlugin<Configurator>();
-        auth.setAccessTokenExpireTime(trantor::Date::now().after(configurator->getAccessExpire()).toDbStringLocal());
+        auth.setAccessTokenExpireTime(Utils::fromDate(configurator->getAccessExpire()));
         authMapper.update(auth);
 
         result["id"] = id;
@@ -60,9 +61,9 @@ bool Authorizer::authToken(
     try {
         orm::Mapper<Techmino::Auth> authMapper(app().getDbClient());
         auto configurator = app().getPlugin<Configurator>();
-        auth->setAuthTokenExpireTime(trantor::Date::now().after(configurator->getAuthExpire()).toDbStringLocal());
+        auth->setAuthTokenExpireTime(Utils::fromDate(configurator->getAuthExpire()));
         auth->setAccessToken(Crypto::keccak(drogon::utils::getUuid()));
-        auth->setAccessTokenExpireTime(trantor::Date::now().after(configurator->getAccessExpire()).toDbStringLocal());
+        auth->setAccessTokenExpireTime(Utils::fromDate(configurator->getAccessExpire()));
         authMapper.update(*auth);
         result["message"] = "OK";
         return true;
@@ -92,11 +93,11 @@ Authorizer::Status Authorizer::authToken(
         if (authToken != auth.getValueOfAuthToken()) {
             return Authorizer::Status::Incorrect;
         }
-        if (trantor::Date::now() > trantor::Date::fromDbStringLocal(auth.getValueOfAuthTokenExpireTime())) {
+        if (Utils::toDate() > Utils::toDate(auth.getValueOfAuthTokenExpireTime())) {
             return Authorizer::Status::Expired;
         }
         auto configurator = app().getPlugin<Configurator>();
-        auth.setAuthTokenExpireTime(trantor::Date::now().after(configurator->getAuthExpire()).toDbStringLocal());
+        auth.setAuthTokenExpireTime(Utils::fromDate(configurator->getAuthExpire()));
         authMapper.update(auth);
 
         result["id"] = id;
@@ -136,7 +137,7 @@ Authorizer::Status Authorizer::password(
         Techmino::Auth auth;
         auth.setId(matchedUsers[0]["_id"].as<int64_t>());
         auth.setAuthToken(drogon::utils::getUuid());
-        auth.setAuthTokenExpireTime(trantor::Date::now().after(configurator->getAuthExpire()).toDbStringLocal());
+        auth.setAuthTokenExpireTime(Utils::fromDate(configurator->getAuthExpire()));
         authMapper.update(auth);
 
         result["message"] = "OK";
@@ -174,7 +175,7 @@ Authorizer::Status Authorizer::password(
         Techmino::Auth newAuth;
         newAuth.setId(auth["_id"].as<int64_t>());
         newAuth.setAuthToken(drogon::utils::getUuid());
-        newAuth.setAuthTokenExpireTime(trantor::Date::now().after(configurator->getAuthExpire()).toDbStringLocal());
+        newAuth.setAuthTokenExpireTime(Utils::fromDate(configurator->getAuthExpire()));
         authMapper.update(newAuth);
 
         result["id"] = newAuth.getValueOfId();
