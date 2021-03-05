@@ -11,7 +11,7 @@
 namespace tech::utils {
     class Utils {
     public:
-        static unsigned long uniform_random(unsigned int size = 99999999);
+        static uint64_t uniform_random(uint64_t size = 99999999);
 
         static std::string fromDate(const uint64_t &milliseconds = 0);
 

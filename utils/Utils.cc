@@ -10,14 +10,14 @@ using namespace std;
 using namespace tech::utils;
 using namespace trantor;
 
-unsigned long Utils::uniform_random(unsigned int size) {
-    mt19937 generator(Date::now().microSecondsSinceEpoch());
-    uniform_int_distribution<int> dis(0, size);
+uint64_t Utils::uniform_random(uint64_t size) {
+    mt19937 generator(static_cast<unsigned int>(Date::now().microSecondsSinceEpoch()));
+    uniform_int_distribution<uint64_t> dis(0, size);
     return dis(generator);
 }
 
 string Utils::fromDate(const uint64_t &milliseconds) {
-    return Date::now().after(milliseconds).toDbStringLocal();
+    return Date::now().after(static_cast<double>(milliseconds)).toDbStringLocal();
 }
 
 std::string Utils::fromDate(const Date &date) {
