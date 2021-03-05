@@ -28,19 +28,14 @@ namespace tech::utils {
         static Status accessToken(
                 const int64_t &id,
                 const std::string &accessToken,
-                Json::Value &result
-        );
-
-        static bool authToken(
-                const drogon::WebSocketConnectionPtr &wsConnPtr,
-                const std::shared_ptr<drogon_model::Techmino::Auth> &auth,
-                drogon::CloseCode &code,
+                const std::string &newExpireTime,
                 Json::Value &result
         );
 
         static Status authToken(
                 const int64_t &id,
                 const std::string &authToken,
+                const std::string &newExpireTime,
                 Json::Value &result
         );
 
@@ -48,21 +43,16 @@ namespace tech::utils {
                 const drogon::WebSocketConnectionPtr &wsConnPtr,
                 const std::string &email,
                 const std::string &password,
+                const std::string &newExpireTime,
                 Json::Value &result
         );
 
         static Status password(
                 const std::string &email,
                 const std::string &password,
+                const std::string &newExpireTime,
                 Json::Value &result
         );
-
-//        static bool versionCode(
-//                const drogon::WebSocketConnectionPtr &wsConnPtr,
-//                const int &versionCode,
-//                drogon::CloseCode &code,
-//                Json::Value &result
-//        );
 
         static Authorizer::Status versionCode(
                 const int &versionCode,

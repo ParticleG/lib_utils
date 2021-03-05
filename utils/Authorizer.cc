@@ -5,22 +5,19 @@
 #include <models/App.h>
 #include <models/Auth.h>
 #include <models/Message.h>
-#include <plugins/Configurator.h>
-#include <structures/User.h>
 #include <utils/Authorizer.h>
 #include <utils/Crypto.h>
 #include <utils/Utils.h>
 
 using namespace drogon;
 using namespace drogon_model;
-using namespace tech::plugins;
-using namespace tech::structures;
 using namespace tech::utils;
 using namespace std;
 
 Authorizer::Status Authorizer::accessToken(
         const int64_t &id,
         const string &accessToken,
+        const string &newExpireTime,
         Json::Value &result
 ) {
     if (id < 0 || accessToken.empty()) {
@@ -39,8 +36,8 @@ Authorizer::Status Authorizer::accessToken(
         if (Utils::toDate() > Utils::toDate(auth.getValueOfAccessTokenExpireTime())) {
             return Authorizer::Status::Expired;
         }
-        auto configurator = app().getPlugin<Configurator>();
-        auth.setAccessTokenExpireTime(Utils::fromDate(configurator->getAccessExpire()));
+
+        auth.setAccessTokenExpireTime(newExpireTime);
         authMapper.update(auth);
 
         result["id"] = id;
@@ -52,32 +49,10 @@ Authorizer::Status Authorizer::accessToken(
     }
 }
 
-bool Authorizer::authToken(
-        const WebSocketConnectionPtr &wsConnPtr,
-        const shared_ptr<Techmino::Auth> &auth,
-        CloseCode &code,
-        Json::Value &result
-) {
-    try {
-        orm::Mapper<Techmino::Auth> authMapper(app().getDbClient());
-        auto configurator = app().getPlugin<Configurator>();
-        auth->setAuthTokenExpireTime(Utils::fromDate(configurator->getAuthExpire()));
-        auth->setAccessToken(Crypto::keccak(drogon::utils::getUuid()));
-        auth->setAccessTokenExpireTime(Utils::fromDate(configurator->getAccessExpire()));
-        authMapper.update(*auth);
-        result["message"] = "OK";
-        return true;
-    } catch (const orm::DrogonDbException &e) {
-        LOG_ERROR << "error:" << e.base().what();
-        code = CloseCode::kUnexpectedCondition;
-        result["message"] = "Internal error";
-        return false;
-    }
-}
-
 Authorizer::Status Authorizer::authToken(
         const int64_t &id,
         const string &authToken,
+        const string &newExpireTime,
         Json::Value &result
 ) {
     if (id < 0 || authToken.empty()) {
@@ -96,8 +71,7 @@ Authorizer::Status Authorizer::authToken(
         if (Utils::toDate() > Utils::toDate(auth.getValueOfAuthTokenExpireTime())) {
             return Authorizer::Status::Expired;
         }
-        auto configurator = app().getPlugin<Configurator>();
-        auth.setAuthTokenExpireTime(Utils::fromDate(configurator->getAuthExpire()));
+        auth.setAuthTokenExpireTime(newExpireTime);
         authMapper.update(auth);
 
         result["id"] = id;
@@ -113,6 +87,7 @@ Authorizer::Status Authorizer::password(
         const WebSocketConnectionPtr &wsConnPtr,
         const string &email,
         const string &password,
+        const std::string &newExpireTime,
         Json::Value &result
 ) {
     if (email.empty() || password.empty()) {
@@ -132,12 +107,11 @@ Authorizer::Status Authorizer::password(
             return Authorizer::Status::Incorrect;
         }
 
-        auto configurator = app().getPlugin<Configurator>();
         Mapper<Techmino::Auth> authMapper(app().getDbClient());
         Techmino::Auth auth;
         auth.setId(matchedUsers[0]["_id"].as<int64_t>());
         auth.setAuthToken(drogon::utils::getUuid());
-        auth.setAuthTokenExpireTime(Utils::fromDate(configurator->getAuthExpire()));
+        auth.setAuthTokenExpireTime(newExpireTime);
         authMapper.update(auth);
 
         result["message"] = "OK";
@@ -154,6 +128,7 @@ Authorizer::Status Authorizer::password(
 Authorizer::Status Authorizer::password(
         const string &email,
         const string &password,
+        const std::string &newExpireTime,
         Json::Value &result
 ) {
     if (email.empty() || password.empty()) {
@@ -170,12 +145,11 @@ Authorizer::Status Authorizer::password(
             return Authorizer::Status::Incorrect;
         }
         auto auth = matchedAuths[0];
-        auto configurator = app().getPlugin<Configurator>();
         Mapper<Techmino::Auth> authMapper(app().getDbClient());
         Techmino::Auth newAuth;
         newAuth.setId(auth["_id"].as<int64_t>());
         newAuth.setAuthToken(drogon::utils::getUuid());
-        newAuth.setAuthTokenExpireTime(Utils::fromDate(configurator->getAuthExpire()));
+        newAuth.setAuthTokenExpireTime(newExpireTime);
         authMapper.update(newAuth);
 
         result["id"] = newAuth.getValueOfId();
@@ -186,28 +160,6 @@ Authorizer::Status Authorizer::password(
         return Authorizer::Status::InternalError;
     }
 }
-
-
-//bool Authorizer::versionCode(
-//        const WebSocketConnectionPtr &wsConnPtr,
-//        const int &versionCode,
-//        CloseCode &code,
-//        Json::Value &result
-//) {
-//    orm::Mapper<Techmino::App> appMapper(app().getDbClient());
-//    auto leastApp = appMapper.orderBy(Techmino::App::Cols::_version_code, SortOrder::DESC).limit(1)
-//            .findBy(Criteria(Techmino::App::Cols::_compatible, CompareOperator::EQ, false))[0];
-//
-//    if (versionCode < leastApp.getValueOfVersionCode()) {
-//        code = CloseCode::kViolation;
-//        result["message"] = "Outdated version";
-//        return false;
-//    } else {
-//        result["message"] = "OK";
-//        wsConnPtr->setContext(make_shared<App>(versionCode));
-//        return true;
-//    }
-//}
 
 Authorizer::Status Authorizer::versionCode(
         const int &versionCode,
