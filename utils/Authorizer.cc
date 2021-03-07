@@ -84,48 +84,6 @@ Authorizer::Status Authorizer::authToken(
 }
 
 Authorizer::Status Authorizer::password(
-        const WebSocketConnectionPtr &wsConnPtr,
-        const string &email,
-        const string &password,
-        const string &newExpireTime,
-        Json::Value &result
-) {
-    if (email.empty() || password.empty()) {
-        result["message"] = "Wrong format";
-        result["reason"] = "Empty email or password";
-        return Authorizer::Status::InvalidComponents;
-    }
-    try {
-        auto matchedUsers = app().getDbClient()->execSqlSync(
-                "select * from auth "
-                "where email = $1 "
-                "and crypt($2, password) = password",
-                email, password
-        );
-        if (matchedUsers.empty()) {
-            result["message"] = "Email or Password is incorrect";
-            return Authorizer::Status::Incorrect;
-        }
-
-        Mapper<Techmino::Auth> authMapper(app().getDbClient());
-        Techmino::Auth auth;
-        auth.setId(matchedUsers[0]["_id"].as<int64_t>());
-        auth.setAuthToken(drogon::utils::getUuid());
-        auth.setAuthTokenExpireTime(newExpireTime);
-        authMapper.update(auth);
-
-        result["message"] = "OK";
-        result["id"] = auth.getValueOfId();
-        result["authToken"] = auth.getValueOfAuthToken();
-        return Authorizer::Status::OK;
-    } catch (const orm::DrogonDbException &e) {
-        LOG_ERROR << "error:" << e.base().what();
-        result["message"] = "Internal error";
-        return Authorizer::Status::InternalError;
-    }
-}
-
-Authorizer::Status Authorizer::password(
         const string &email,
         const string &password,
         const string &newExpireTime,

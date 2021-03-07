@@ -38,14 +38,6 @@ namespace tech::utils {
         );
 
         Status password(
-                const drogon::WebSocketConnectionPtr &wsConnPtr,
-                const std::string &email,
-                const std::string &password,
-                const std::string &newExpireTime,
-                Json::Value &result
-        );
-
-        Status password(
                 const std::string &email,
                 const std::string &password,
                 const std::string &newExpireTime,
