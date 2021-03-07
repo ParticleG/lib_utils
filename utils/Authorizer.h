@@ -52,7 +52,7 @@ namespace tech::utils {
                 Json::Value &result
         );
 
-        Authorizer::Status versionCode(
+        Status versionCode(
                 const int &versionCode,
                 Json::Value &result
         );

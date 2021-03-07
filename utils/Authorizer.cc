@@ -87,7 +87,7 @@ Authorizer::Status Authorizer::password(
         const WebSocketConnectionPtr &wsConnPtr,
         const string &email,
         const string &password,
-        const std::string &newExpireTime,
+        const string &newExpireTime,
         Json::Value &result
 ) {
     if (email.empty() || password.empty()) {
@@ -128,7 +128,7 @@ Authorizer::Status Authorizer::password(
 Authorizer::Status Authorizer::password(
         const string &email,
         const string &password,
-        const std::string &newExpireTime,
+        const string &newExpireTime,
         Json::Value &result
 ) {
     if (email.empty() || password.empty()) {

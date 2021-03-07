@@ -20,7 +20,7 @@ string Utils::fromDate(const uint64_t &milliseconds) {
     return Date::now().after(static_cast<double>(milliseconds)).toDbStringLocal();
 }
 
-std::string Utils::fromDate(const Date &date) {
+string Utils::fromDate(const Date &date) {
     return date.toDbStringLocal();
 }
 
