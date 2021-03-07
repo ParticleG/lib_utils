@@ -17,7 +17,7 @@ uint64_t Utils::uniform_random(uint64_t size) {
 }
 
 string Utils::fromDate(const uint64_t &milliseconds) {
-    return Date::now().after(static_cast<double>(milliseconds)).toDbStringLocal();
+    return fromDate(Date::now().after(static_cast<double>(milliseconds)));
 }
 
 string Utils::fromDate(const Date &date) {
