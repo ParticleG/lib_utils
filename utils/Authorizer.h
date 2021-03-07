@@ -8,8 +8,7 @@
 #include <drogon/WebSocketController.h>
 
 namespace tech::utils {
-    class Authorizer {
-    public:
+    namespace Authorizer {
         enum class Status {
             OK,
             InvalidComponents,
@@ -24,22 +23,21 @@ namespace tech::utils {
             GetAccessToken,
             CheckAccessToken,
         };
-    public:
-        static Status accessToken(
+        Status accessToken(
                 const int64_t &id,
                 const std::string &accessToken,
                 const std::string &newExpireTime,
                 Json::Value &result
         );
 
-        static Status authToken(
+        Status authToken(
                 const int64_t &id,
                 const std::string &authToken,
                 const std::string &newExpireTime,
                 Json::Value &result
         );
 
-        static Status password(
+        Status password(
                 const drogon::WebSocketConnectionPtr &wsConnPtr,
                 const std::string &email,
                 const std::string &password,
@@ -47,16 +45,16 @@ namespace tech::utils {
                 Json::Value &result
         );
 
-        static Status password(
+        Status password(
                 const std::string &email,
                 const std::string &password,
                 const std::string &newExpireTime,
                 Json::Value &result
         );
 
-        static Authorizer::Status versionCode(
+        Authorizer::Status versionCode(
                 const int &versionCode,
                 Json::Value &result
         );
-    };
+    }
 }
