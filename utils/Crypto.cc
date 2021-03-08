@@ -7,7 +7,7 @@
 #include <cryptopp/blake2.h>
 #include <cryptopp/keccak.h>
 #include <sstream>
-#include <utils/Crypto.h>
+#include "utils/Crypto.h"
 
 using namespace tech::utils;
 using namespace CryptoPP;
