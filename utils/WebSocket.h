@@ -7,8 +7,7 @@
 #include <drogon/WebSocketController.h>
 
 namespace tech::utils {
-    class WebSocket {
-    public:
+    namespace WebSocket {
         enum class Type {
             App = 0,
             User = 1,
@@ -17,26 +16,25 @@ namespace tech::utils {
             Stream = 4
         };
 
-    public:
-        static std::string fromJson(
+        std::string fromJson(
                 const Json::Value &value
         );
 
-        static std::string toJson(
+        std::string toJson(
                 const std::string &rawData,
                 Json::Value &result
         );
 
-        static void initPing(
+        void initPing(
                 const drogon::WebSocketConnectionPtr &wsConnPtr,
                 const Json::Value &initMessage,
                 const std::chrono::duration<long double> &interval
         );
 
-        static void close(
+        void close(
                 const drogon::WebSocketConnectionPtr &webSocketConnectionPtr,
                 drogon::CloseCode _code,
                 const std::string &_reason
         );
-    };
+    }
 }

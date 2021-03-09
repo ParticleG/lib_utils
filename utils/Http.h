@@ -8,36 +8,35 @@
 #include <json/json.h>
 
 namespace tech::utils {
-    class Http {
-    public:
-        static void fromJson(
+    namespace Http {
+        void fromJson(
                 const drogon::HttpStatusCode &code,
                 const Json::Value &body,
                 const std::function<void(const drogon::HttpResponsePtr &)> &callback
         );
 
-        static void fromPlain(
+        void fromPlain(
                 const drogon::HttpStatusCode &code,
                 const std::string &body,
                 const std::function<void(const drogon::HttpResponsePtr &)> &callback
         );
 
-        static void fromHtml(
+        void fromHtml(
                 const drogon::HttpStatusCode &code,
                 const std::string &body,
                 const std::function<void(const drogon::HttpResponsePtr &)> &callback
         );
 
-        static void from(
+        void from(
                 const drogon::HttpStatusCode &code,
                 const drogon::ContentType &type,
                 const std::string &body,
                 const std::function<void(const drogon::HttpResponsePtr &)> &callback
         );
 
-        static std::string toJson(
+        std::string toJson(
                 const drogon::HttpRequestPtr &req,
                 Json::Value &result
         );
-    };
+    }
 }
