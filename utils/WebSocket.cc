@@ -2,13 +2,13 @@
 // Created by Parti on 2021/2/5.
 //
 
-#include <utils/WebSocket.h>
+#include <utils/websocket.h>
 
 using namespace tech::utils;
 using namespace drogon;
 using namespace std;
 
-string WebSocket::fromJson(const Json::Value &value) {
+string websocket::fromJson(const Json::Value &value) {
     Json::StreamWriterBuilder writerBuilder;
     writerBuilder.settings_["indentation"] = "";
     unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
@@ -17,7 +17,7 @@ string WebSocket::fromJson(const Json::Value &value) {
     return oss.str();
 }
 
-string WebSocket::toJson(
+string websocket::toJson(
         const string &rawData,
         Json::Value &result
 ) {
@@ -28,16 +28,16 @@ string WebSocket::toJson(
     return errorMessage;
 }
 
-void WebSocket::initPing(
+void websocket::initPing(
         const WebSocketConnectionPtr &wsConnPtr,
         const Json::Value &initMessage,
         const chrono::duration<long double> &interval
 ) {
-    wsConnPtr->send(WebSocket::fromJson(initMessage));
+    wsConnPtr->send(websocket::fromJson(initMessage));
     wsConnPtr->setPingMessage("", interval);
 }
 
-void WebSocket::close(
+void websocket::close(
         const WebSocketConnectionPtr &webSocketConnectionPtr,
         CloseCode _code,
         const string &_reason

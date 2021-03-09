@@ -7,7 +7,7 @@
 #include <drogon/WebSocketController.h>
 
 namespace tech::utils {
-    namespace WebSocket {
+    namespace websocket {
         enum class Type {
             App = 0,
             User = 1,

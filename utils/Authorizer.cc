@@ -5,36 +5,36 @@
 #include <models/App.h>
 #include <models/Auth.h>
 #include <models/Message.h>
-#include <utils/Authorizer.h>
-#include <utils/Crypto.h>
-#include <utils/Utils.h>
+#include <utils/authorizer.h>
+#include <utils/crypto.h>
+#include <utils/misc.h>
 
 using namespace drogon;
 using namespace drogon_model;
 using namespace tech::utils;
 using namespace std;
 
-Authorizer::Status Authorizer::accessToken(
+authorizer::Status authorizer::accessToken(
         const int64_t &id,
         const string &accessToken,
         const string &newExpireTime,
         Json::Value &result
 ) {
     if (id < 0 || accessToken.empty()) {
-        return Authorizer::Status::InvalidComponents;
+        return authorizer::Status::InvalidComponents;
     }
     try {
         orm::Mapper<Techmino::Auth> authMapper(app().getDbClient());
         auto matchedAuths = authMapper.findBy(Criteria(Techmino::Auth::Cols::__id, CompareOperator::EQ, id));
         if (matchedAuths.empty()) {
-            return Authorizer::Status::NotFound;
+            return authorizer::Status::NotFound;
         }
         auto auth = matchedAuths[0];
         if (accessToken != auth.getValueOfAccessToken()) {
-            return Authorizer::Status::Incorrect;
+            return authorizer::Status::Incorrect;
         }
-        if (Utils::toDate() > Utils::toDate(auth.getValueOfAccessTokenExpireTime())) {
-            return Authorizer::Status::Expired;
+        if (misc::toDate() > misc::toDate(auth.getValueOfAccessTokenExpireTime())) {
+            return authorizer::Status::Expired;
         }
 
         auth.setAccessTokenExpireTime(newExpireTime);
@@ -42,55 +42,55 @@ Authorizer::Status Authorizer::accessToken(
 
         result["id"] = id;
 
-        return Authorizer::Status::OK;
+        return authorizer::Status::OK;
     } catch (const orm::DrogonDbException &e) {
         LOG_ERROR << "error:" << e.base().what();
-        return Authorizer::Status::InternalError;
+        return authorizer::Status::InternalError;
     }
 }
 
-Authorizer::Status Authorizer::authToken(
+authorizer::Status authorizer::authToken(
         const int64_t &id,
         const string &authToken,
         const string &newExpireTime,
         Json::Value &result
 ) {
     if (id < 0 || authToken.empty()) {
-        return Authorizer::Status::InvalidComponents;
+        return authorizer::Status::InvalidComponents;
     }
     try {
         orm::Mapper<Techmino::Auth> authMapper(app().getDbClient());
         auto matchedAuths = authMapper.findBy(Criteria(Techmino::Auth::Cols::__id, CompareOperator::EQ, id));
         if (matchedAuths.empty()) {
-            return Authorizer::Status::NotFound;
+            return authorizer::Status::NotFound;
         }
         auto auth = matchedAuths[0];
         if (authToken != auth.getValueOfAuthToken()) {
-            return Authorizer::Status::Incorrect;
+            return authorizer::Status::Incorrect;
         }
-        if (Utils::toDate() > Utils::toDate(auth.getValueOfAuthTokenExpireTime())) {
-            return Authorizer::Status::Expired;
+        if (misc::toDate() > misc::toDate(auth.getValueOfAuthTokenExpireTime())) {
+            return authorizer::Status::Expired;
         }
         auth.setAuthTokenExpireTime(newExpireTime);
         authMapper.update(auth);
 
         result["id"] = id;
 
-        return Authorizer::Status::OK;
+        return authorizer::Status::OK;
     } catch (const orm::DrogonDbException &e) {
         LOG_ERROR << "error:" << e.base().what();
-        return Authorizer::Status::InternalError;
+        return authorizer::Status::InternalError;
     }
 }
 
-Authorizer::Status Authorizer::password(
+authorizer::Status authorizer::password(
         const string &email,
         const string &password,
         const string &newExpireTime,
         Json::Value &result
 ) {
     if (email.empty() || password.empty()) {
-        return Authorizer::Status::InvalidComponents;
+        return authorizer::Status::InvalidComponents;
     }
     try {
         auto matchedAuths = app().getDbClient()->execSqlSync(
@@ -100,7 +100,7 @@ Authorizer::Status Authorizer::password(
                 email, password
         );
         if (matchedAuths.empty()) {
-            return Authorizer::Status::Incorrect;
+            return authorizer::Status::Incorrect;
         }
         auto auth = matchedAuths[0];
         Mapper<Techmino::Auth> authMapper(app().getDbClient());
@@ -112,19 +112,19 @@ Authorizer::Status Authorizer::password(
 
         result["id"] = newAuth.getValueOfId();
 
-        return Authorizer::Status::OK;
+        return authorizer::Status::OK;
     } catch (const orm::DrogonDbException &e) {
         LOG_ERROR << "error:" << e.base().what();
-        return Authorizer::Status::InternalError;
+        return authorizer::Status::InternalError;
     }
 }
 
-Authorizer::Status Authorizer::versionCode(
+authorizer::Status authorizer::versionCode(
         const int &versionCode,
         Json::Value &result
 ) {
     if (versionCode < 0) {
-        return Authorizer::Status::InvalidComponents;
+        return authorizer::Status::InvalidComponents;
     }
     try {
         orm::Mapper<Techmino::App> appMapper(app().getDbClient());
@@ -143,17 +143,17 @@ Authorizer::Status Authorizer::versionCode(
             result["least"]["name"] = leastApp.getValueOfVersionName();
             result["least"]["content"] = leastApp.getValueOfVersionContent();
             result["notice"] = notice.getValueOfContent();
-            return Authorizer::Status::Expired;
+            return authorizer::Status::Expired;
         } else {
             result["versionCode"] = versionCode;
             result["content"]["newest"]["code"] = newestApp.getValueOfVersionCode();
             result["content"]["newest"]["name"] = newestApp.getValueOfVersionName();
             result["content"]["newest"]["content"] = newestApp.getValueOfVersionContent();
             result["content"]["notice"] = notice.getValueOfContent();
-            return Authorizer::Status::OK;
+            return authorizer::Status::OK;
         }
     } catch (const orm::DrogonDbException &e) {
         LOG_ERROR << "error:" << e.base().what();
-        return Authorizer::Status::InternalError;
+        return authorizer::Status::InternalError;
     }
 }

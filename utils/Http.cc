@@ -2,13 +2,13 @@
 // Created by Parti on 2021/2/4.
 //
 
-#include <utils/Http.h>
+#include <utils/http.h>
 
 using namespace tech::utils;
 using namespace drogon;
 using namespace std;
 
-void Http::fromJson(
+void http::fromJson(
         const HttpStatusCode &code,
         const Json::Value &body,
         const function<void(const HttpResponsePtr &)> &callback
@@ -18,18 +18,18 @@ void Http::fromJson(
     callback(httpJsonResponse);
 }
 
-void Http::fromPlain(
+void http::fromPlain(
         const HttpStatusCode &code, const string &body,
         const function<void(const HttpResponsePtr &)> &callback
 ) { from(code, CT_TEXT_PLAIN, body, callback); }
 
-void Http::fromHtml(
+void http::fromHtml(
         const HttpStatusCode &code,
         const string &body,
         const function<void(const HttpResponsePtr &)> &callback
 ) { from(code, CT_TEXT_HTML, body, callback); }
 
-void Http::from(
+void http::from(
         const HttpStatusCode &code,
         const ContentType &type,
         const string &body,
@@ -42,7 +42,7 @@ void Http::from(
     callback(httpResponse);
 }
 
-string Http::toJson(
+string http::toJson(
         const HttpRequestPtr &req,
         Json::Value &result
 ) {

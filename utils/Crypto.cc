@@ -7,13 +7,13 @@
 #include <cryptopp/blake2.h>
 #include <cryptopp/keccak.h>
 #include <sstream>
-#include <utils/Crypto.h>
+#include <utils/crypto.h>
 
 using namespace tech::utils;
 using namespace CryptoPP;
 using namespace std;
 
-string Crypto::blake2b(const string &source, const unsigned int &divider) {
+string crypto::blake2b(const string &source, const unsigned int &divider) {
     stringstream tempStringStream;
     HexEncoder encoder(new FileSink(tempStringStream));
     string digest;
@@ -25,7 +25,7 @@ string Crypto::blake2b(const string &source, const unsigned int &divider) {
     return tempStringStream.str();
 }
 
-string Crypto::keccak(const string &source, const unsigned int &divider) {
+string crypto::keccak(const string &source, const unsigned int &divider) {
     stringstream tempStringStream;
     HexEncoder encoder(new FileSink(tempStringStream));
     string digest;

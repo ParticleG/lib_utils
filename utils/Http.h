@@ -8,7 +8,7 @@
 #include <json/json.h>
 
 namespace tech::utils {
-    namespace Http {
+    namespace http {
         void fromJson(
                 const drogon::HttpStatusCode &code,
                 const Json::Value &body,

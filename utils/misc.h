@@ -9,7 +9,7 @@
 #include <trantor/utils/Date.h>
 
 namespace tech::utils {
-    namespace Utils {
+    namespace misc {
         uint64_t uniform_random(uint64_t size = 99999999);
 
         std::string fromDate(const uint64_t &milliseconds = 0);

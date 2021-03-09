@@ -8,7 +8,7 @@
 #include <drogon/WebSocketController.h>
 
 namespace tech::utils {
-    namespace Authorizer {
+    namespace authorizer {
         enum class Status {
             OK,
             InvalidComponents,

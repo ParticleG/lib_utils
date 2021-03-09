@@ -3,31 +3,31 @@
 //
 
 #include <random>
-#include <utils/Utils.h>
+#include <utils/misc.h>
 
 
 using namespace std;
 using namespace tech::utils;
 using namespace trantor;
 
-uint64_t Utils::uniform_random(uint64_t size) {
+uint64_t misc::uniform_random(uint64_t size) {
     mt19937 generator(static_cast<unsigned int>(Date::now().microSecondsSinceEpoch()));
     uniform_int_distribution<uint64_t> dis(0, size);
     return dis(generator);
 }
 
-string Utils::fromDate(const uint64_t &milliseconds) {
+string misc::fromDate(const uint64_t &milliseconds) {
     return fromDate(Date::now().after(static_cast<double>(milliseconds)));
 }
 
-string Utils::fromDate(const Date &date) {
+string misc::fromDate(const Date &date) {
     return date.toDbStringLocal();
 }
 
-trantor::Date Utils::toDate(const string &date) {
+trantor::Date misc::toDate(const string &date) {
     return Date::fromDbStringLocal(date);
 }
 
-trantor::Date Utils::toDate() {
+trantor::Date misc::toDate() {
     return Date::now();
 }
