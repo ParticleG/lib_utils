@@ -46,7 +46,11 @@ string http::toJson(
         const HttpRequestPtr &req,
         Json::Value &result
 ) {
-    LOG_DEBUG << req->getBody();
-    result = *(req->getJsonObject());
-    return req->getJsonError();
+    LOG_DEBUG << "body: " << req->getBody();
+    auto object = req->getJsonObject();
+    if (object) {
+        result = *object;
+        return req->getJsonError();
+    }
+    return "Invalid Json";
 }
