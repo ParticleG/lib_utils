@@ -46,6 +46,7 @@ string http::toJson(
         const HttpRequestPtr &req,
         Json::Value &result
 ) {
-    result = *req->getJsonObject();
+    LOG_DEBUG << req->getBody();
+    result = *(req->getJsonObject());
     return req->getJsonError();
 }
