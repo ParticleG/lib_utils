@@ -120,38 +120,24 @@ authorizer::Status authorizer::password(
 }
 
 authorizer::Status authorizer::versionCode(
-        const int &versionCode,
         Json::Value &result
 ) {
-    if (versionCode < 0) {
-        return authorizer::Status::InvalidComponents;
-    }
     try {
         orm::Mapper<Techmino::App> appMapper(app().getDbClient());
         orm::Mapper<Techmino::Message> messageMapper(app().getDbClient());
+
         auto newestApp = appMapper.orderBy(Techmino::App::Cols::_version_code, SortOrder::DESC).limit(1).findAll()[0];
         auto leastApp = appMapper.orderBy(Techmino::App::Cols::_version_code, SortOrder::DESC).limit(1)
                 .findBy(Criteria(Techmino::App::Cols::_compatible, CompareOperator::EQ, false))[0];
         auto notice = messageMapper.orderBy(Techmino::Message::Cols::_id, SortOrder::DESC)
                 .findBy(Criteria(Techmino::Message::Cols::_type, CompareOperator::EQ, "notice"))[0];
 
-        if (versionCode < leastApp.getValueOfVersionCode()) {
-            result["newest"]["code"] = newestApp.getValueOfVersionCode();
-            result["newest"]["name"] = newestApp.getValueOfVersionName();
-            result["newest"]["content"] = newestApp.getValueOfVersionContent();
-            result["least"]["code"] = leastApp.getValueOfVersionCode();
-            result["least"]["name"] = leastApp.getValueOfVersionName();
-            result["least"]["content"] = leastApp.getValueOfVersionContent();
-            result["notice"] = notice.getValueOfContent();
-            return authorizer::Status::Expired;
-        } else {
-            result["versionCode"] = versionCode;
-            result["content"]["newest"]["code"] = newestApp.getValueOfVersionCode();
-            result["content"]["newest"]["name"] = newestApp.getValueOfVersionName();
-            result["content"]["newest"]["content"] = newestApp.getValueOfVersionContent();
-            result["content"]["notice"] = notice.getValueOfContent();
-            return authorizer::Status::OK;
-        }
+        result["content"]["newestCode"] = newestApp.getValueOfVersionCode();
+        result["content"]["newestName"] = newestApp.getValueOfVersionName();
+        result["content"]["lowest"] = leastApp.getValueOfVersionCode();
+        result["content"]["notice"] = notice.getValueOfContent();
+        return authorizer::Status::OK;
+
     } catch (const orm::DrogonDbException &e) {
         LOG_ERROR << "error:" << e.base().what();
         return authorizer::Status::InternalError;

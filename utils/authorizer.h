@@ -45,7 +45,6 @@ namespace tech::utils {
         );
 
         Status versionCode(
-                const int &versionCode,
                 Json::Value &result
         );
     }
