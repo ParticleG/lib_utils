@@ -17,7 +17,7 @@ endif ()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../lib_models lib_models)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../lib_database lib_database)
 
 add_library(${PROJECT_NAME} STATIC)
 
@@ -30,7 +30,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
         OpenSSL::SSL
         OpenSSL::Crypto
         cryptopp-static
-        MODEL_LIB)
+        DATABASE_LIB)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
