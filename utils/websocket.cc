@@ -33,6 +33,7 @@ void websocket::initPing(
         const Json::Value &initMessage,
         const chrono::duration<long double> &interval
 ) {
+    LOG_DEBUG << websocket::fromJson(initMessage);
     wsConnPtr->send(websocket::fromJson(initMessage));
     wsConnPtr->setPingMessage("", interval);
 }
