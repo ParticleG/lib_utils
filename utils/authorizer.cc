@@ -40,7 +40,7 @@ authorizer::Status authorizer::accessToken(
         auth.setAccessTokenExpireTime(newExpireTime);
         authMapper.update(auth);
 
-        result["id"] = id;
+        result["uid"] = id;
 
         return authorizer::Status::OK;
     } catch (const orm::DrogonDbException &e) {
@@ -74,7 +74,7 @@ authorizer::Status authorizer::authToken(
         auth.setAuthTokenExpireTime(newExpireTime);
         authMapper.update(auth);
 
-        result["id"] = id;
+        result["uid"] = id;
 
         return authorizer::Status::OK;
     } catch (const orm::DrogonDbException &e) {
@@ -103,6 +103,9 @@ authorizer::Status authorizer::password(
             return authorizer::Status::Incorrect;
         }
         auto auth = matchedAuths[0];
+        if(!auth["validated"].as<bool>()){
+            return authorizer::Status::Expired;
+        }
         Mapper<Techmino::Auth> authMapper(app().getDbClient());
         Techmino::Auth newAuth;
         newAuth.setId(auth["_id"].as<int64_t>());
@@ -110,7 +113,7 @@ authorizer::Status authorizer::password(
         newAuth.setAuthTokenExpireTime(newExpireTime);
         authMapper.update(newAuth);
 
-        result["id"] = newAuth.getValueOfId();
+        result["uid"] = newAuth.getValueOfId();
 
         return authorizer::Status::OK;
     } catch (const orm::DrogonDbException &e) {

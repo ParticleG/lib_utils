@@ -7,8 +7,7 @@
 #include <drogon/HttpController.h>
 #include <drogon/WebSocketController.h>
 
-namespace tech::utils {
-    namespace authorizer {
+namespace tech::utils::authorizer {
         enum class Status {
             OK,
             InvalidComponents,
@@ -48,4 +47,3 @@ namespace tech::utils {
                 Json::Value &result
         );
     }
-}
