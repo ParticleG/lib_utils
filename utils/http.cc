@@ -46,7 +46,6 @@ string http::toJson(
         const HttpRequestPtr &req,
         Json::Value &result
 ) {
-    LOG_DEBUG << "Connection request's body: " << req->getBody();
     auto object = req->getJsonObject();
     if (object) {
         result = *object;

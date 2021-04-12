@@ -4,6 +4,7 @@
 
 #include <random>
 #include <utils/misc.h>
+#include <trantor/utils/Logger.h>
 
 
 using namespace std;
