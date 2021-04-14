@@ -4,8 +4,8 @@
 
 #include <random>
 #include <utils/misc.h>
+#include <thread>
 #include <trantor/utils/Logger.h>
-
 
 using namespace std;
 using namespace tech::utils;
@@ -31,4 +31,10 @@ trantor::Date misc::toDate(const string &date) {
 
 trantor::Date misc::toDate() {
     return Date::now();
+}
+
+void misc::logger(const string &className, const string &message) {
+    std::stringstream ss;
+    ss << std::this_thread::get_id();
+    LOG_DEBUG << "(" << ss.str() << ")[" << className << "] " << message;
 }

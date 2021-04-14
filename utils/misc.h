@@ -6,6 +6,7 @@
 
 #include <json/json.h>
 #include <string>
+#include <sstream>
 #include <trantor/utils/Date.h>
 
 namespace tech::utils::misc {
@@ -18,4 +19,6 @@ namespace tech::utils::misc {
     trantor::Date toDate(const std::string &date);
 
     trantor::Date toDate();
+
+    void logger(const std::string &className, const std::string &message);
 }
