@@ -2,6 +2,7 @@
 // Created by Parti on 2021/1/31.
 //
 
+#include <fstream>
 #include <random>
 #include <utils/misc.h>
 #include <thread>
@@ -31,6 +32,20 @@ trantor::Date misc::toDate(const string &date) {
 
 trantor::Date misc::toDate() {
     return Date::now();
+}
+
+std::string misc::getFileString(std::string_view path) {
+    constexpr auto read_size = std::size_t{4096};
+    auto stream = ifstream{path.data()};
+    stream.exceptions(ios_base::badbit);
+
+    auto out = std::string{};
+    auto buf = std::string(read_size, '\0');
+    while (stream.read(&buf[0], read_size)) {
+        out.append(buf, 0, stream.gcount());
+    }
+    out.append(buf, 0, stream.gcount());
+    return out;
 }
 
 void misc::logger(const string &className, const string &message) {

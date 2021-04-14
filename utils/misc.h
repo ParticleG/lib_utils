@@ -20,5 +20,7 @@ namespace tech::utils::misc {
 
     trantor::Date toDate();
 
+    std::string getFileString(std::string_view path);
+
     void logger(const std::string &className, const std::string &message);
 }
