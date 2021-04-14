@@ -8,42 +8,43 @@
 #include <drogon/WebSocketController.h>
 
 namespace tech::utils::authorizer {
-        enum class Status {
-            OK,
-            InvalidComponents,
-            NotFound,
-            Incorrect,
-            Expired,
-            InternalError,
-        };
-        enum class Type {
-            GetAuthToken,
-            CheckAuthToken,
-            GetAccessToken,
-            CheckAccessToken,
-        };
-        Status accessToken(
-                const int64_t &id,
-                const std::string &accessToken,
-                const std::string &newExpireTime,
-                Json::Value &result
-        );
+    enum class Status {
+        OK,
+        InvalidComponents,
+        NotFound,
+        Incorrect,
+        Expired,
+        InternalError,
+    };
+    enum class Type {
+        GetAuthToken,
+        CheckAuthToken,
+        GetAccessToken,
+        CheckAccessToken,
+    };
 
-        Status authToken(
-                const int64_t &id,
-                const std::string &authToken,
-                const std::string &newExpireTime,
-                Json::Value &result
-        );
+    Status accessToken(
+            const int64_t &id,
+            const std::string &accessToken,
+            const std::string &newExpireTime,
+            Json::Value &result
+    );
 
-        Status password(
-                const std::string &email,
-                const std::string &password,
-                const std::string &newExpireTime,
-                Json::Value &result
-        );
+    Status authToken(
+            const int64_t &id,
+            const std::string &authToken,
+            const std::string &newExpireTime,
+            Json::Value &result
+    );
 
-        Status versionCode(
-                Json::Value &result
-        );
-    }
+    Status password(
+            const std::string &email,
+            const std::string &password,
+            const std::string &newExpireTime,
+            Json::Value &result
+    );
+
+    Status versionCode(
+            Json::Value &result
+    );
+}

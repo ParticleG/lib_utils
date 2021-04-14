@@ -103,7 +103,7 @@ authorizer::Status authorizer::password(
             return authorizer::Status::Incorrect;
         }
         auto auth = matchedAuths[0];
-        if(!auth["validated"].as<bool>()){
+        if (!auth["validated"].as<bool>()) {
             return authorizer::Status::Expired;
         }
         Mapper<Techmino::Auth> authMapper(app().getDbClient());
