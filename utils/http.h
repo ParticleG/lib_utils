@@ -14,13 +14,20 @@ namespace tech::utils::http {
             const std::function<void(const drogon::HttpResponsePtr &)> &callback
     );
 
-    void fromPlain(
+    void fromJson(
+            const drogon::HttpStatusCode &code,
+            const Json::Value &body,
+            const std::vector<drogon::Cookie> &cookies,
+            const std::function<void(const drogon::HttpResponsePtr &)> &callback
+    );
+
+    [[maybe_unused]] void fromPlain(
             const drogon::HttpStatusCode &code,
             const std::string &body,
             const std::function<void(const drogon::HttpResponsePtr &)> &callback
     );
 
-    void fromHtml(
+    [[maybe_unused]] void fromHtml(
             const drogon::HttpStatusCode &code,
             const std::string &body,
             const std::function<void(const drogon::HttpResponsePtr &)> &callback

@@ -18,12 +18,26 @@ void http::fromJson(
     callback(httpJsonResponse);
 }
 
-void http::fromPlain(
+void http::fromJson(
+        const HttpStatusCode &code,
+        const Json::Value &body,
+        const vector<Cookie> &cookies,
+        const function<void(const HttpResponsePtr &)> &callback
+) {
+    auto httpJsonResponse = HttpResponse::newHttpJsonResponse(body);
+    httpJsonResponse->setStatusCode(code);
+    for (const auto &cookie : cookies) {
+        httpJsonResponse->addCookie(cookie);
+    }
+    callback(httpJsonResponse);
+}
+
+[[maybe_unused]] void http::fromPlain(
         const HttpStatusCode &code, const string &body,
         const function<void(const HttpResponsePtr &)> &callback
 ) { from(code, CT_TEXT_PLAIN, body, callback); }
 
-void http::fromHtml(
+[[maybe_unused]] void http::fromHtml(
         const HttpStatusCode &code,
         const string &body,
         const function<void(const HttpResponsePtr &)> &callback
