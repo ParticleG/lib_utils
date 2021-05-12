@@ -83,6 +83,40 @@ authorizer::Status authorizer::authToken(
     }
 }
 
+authorizer::Status authorizer::webToken(
+        const int64_t &id,
+        const string &webToken,
+        const string &newExpireTime,
+        Json::Value &result
+) {
+    if (id < 0 || webToken.empty()) {
+        return authorizer::Status::InvalidComponents;
+    }
+    try {
+        orm::Mapper<Techmino::Auth> authMapper(app().getDbClient());
+        auto matchedAuths = authMapper.findBy(Criteria(Techmino::Auth::Cols::__id, CompareOperator::EQ, id));
+        if (matchedAuths.empty()) {
+            return authorizer::Status::NotFound;
+        }
+        auto auth = matchedAuths[0];
+        if (webToken != auth.getValueOfWebToken()) {
+            return authorizer::Status::Incorrect;
+        }
+        if (misc::toDate() > misc::toDate(auth.getValueOfWebTokenExpireTime())) {
+            return authorizer::Status::Expired;
+        }
+        auth.setWebTokenExpireTime(newExpireTime);
+        authMapper.update(auth);
+
+        result["uid"] = id;
+
+        return authorizer::Status::OK;
+    } catch (const orm::DrogonDbException &e) {
+        LOG_ERROR << "error:" << e.base().what();
+        return authorizer::Status::InternalError;
+    }
+}
+
 authorizer::Status authorizer::password(
         const string &email,
         const string &password,
@@ -111,6 +145,8 @@ authorizer::Status authorizer::password(
         newAuth.setId(auth["_id"].as<int64_t>());
         newAuth.setAuthToken(drogon::utils::getUuid());
         newAuth.setAuthTokenExpireTime(newExpireTime);
+        newAuth.setWebToken(crypto::blake2b(drogon::utils::getUuid()));
+        newAuth.setWebTokenExpireTime(newExpireTime);
         authMapper.update(newAuth);
 
         result["uid"] = newAuth.getValueOfId();

@@ -37,6 +37,13 @@ namespace tech::utils::authorizer {
             Json::Value &result
     );
 
+    Status webToken(
+            const int64_t &id,
+            const std::string &webToken,
+            const std::string &newExpireTime,
+            Json::Value &result
+    );
+
     Status password(
             const std::string &email,
             const std::string &password,
