@@ -22,7 +22,11 @@ string websocket::toJson(
         Json::Value &result
 ) {
     string errorMessage;
-    auto charReader = Json::CharReaderBuilder().newCharReader();
+    /*
+     * TODO: Replace with better implementation:
+     * https://github.com/open-source-parsers/jsoncpp/blob/375a1119f8bbbf42e5275f31b281b5d87f2e17f2/include/json/reader.h#L390
+    */
+    unique_ptr<Json::CharReader> const charReader(Json::CharReaderBuilder().newCharReader());
 
     charReader->parse(rawData.data(), rawData.data() + rawData.size(), &result, &errorMessage);
     return errorMessage;
